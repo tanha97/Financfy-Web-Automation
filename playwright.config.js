@@ -68,16 +68,12 @@
 //   outputDir: 'test-results/',
 // });
 
-
-
-
-
-import { defineConfig, devices } from '@playwright/test';
-import * as dotenv from 'dotenv';
+import { defineConfig, devices } from '@playwright/test'
+import * as dotenv from 'dotenv'
 dotenv.config()
-const ENV= process.env.ENV||'staging'
+const ENV = process.env.ENV || 'staging'
 
-const configMap={
+const configMap = {
   staging: {
     baseURL: process.env.STAGING_URL,
     mobileNumber: process.env.MOBILE_NUMBER,
@@ -87,10 +83,8 @@ const configMap={
     baseURL: process.env.PROD_URL,
     mobileNumber: process.env.MOBILE_NUMBER,
     password: process.env.PASSWORD,
-  }
+  },
 }
-
-
 
 /**
  * Read environment variables from file.
@@ -109,25 +103,25 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  retries: 1,
+  retries: 0,
   workers: 1,
 
   reporter: [
-    ['line'],                 // for console output
-    ['html'],                 // built-in HTML report
-    ['allure-playwright']   // Allure report
+    ['line'], // for console output
+    ['html'], // built-in HTML report
+    ['allure-playwright'], // Allure report
   ],
 
-  globalSetup: path.resolve(__dirname, './tests/setup/globalSetup.js'),
+  globalSetup: './tests/setup/globalSetup.js',
+  // globalSetup: path.resolve(__dirname, './tests/setup/globalSetup.js'),
 
   use: {
-    
     baseURL: configMap[ENV].baseURL,
     trace: 'on-first-retry',
     headless: false,
     storageState: 'storageState.json',
     testMatch: ['**/*.spec.js'], //'**/utils/*.js'
-    screenshot: 'on',   // capture screenshot if test fails
+    screenshot: 'on', // capture screenshot if test fails
     video: 'on',
   },
 
@@ -139,26 +133,26 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-  //   {
-  //     name: 'firefox',
-  //     use: { ...devices['Desktop Firefox'] },
-  //   },
+    //   {
+    //     name: 'firefox',
+    //     use: { ...devices['Desktop Firefox'] },
+    //   },
 
-  //   {
-  //     name: 'webkit',
-  //     use: { ...devices['Desktop Safari'] },
-  //   },
+    //   {
+    //     name: 'webkit',
+    //     use: { ...devices['Desktop Safari'] },
+    //   },
 
-  //  /* Test against mobile viewports*/
+    //  /* Test against mobile viewports*/
 
-  //   {
-  //      name: 'Mobile Chrome',
-  //      use: { ...devices['Pixel 5'] },
-  //    },
-  //    {
-  //      name: 'Mobile Safari',
-  //      use: { ...devices['iPhone 12'] },
-  //    },
+    //   {
+    //      name: 'Mobile Chrome',
+    //      use: { ...devices['Pixel 5'] },
+    //    },
+    //    {
+    //      name: 'Mobile Safari',
+    //      use: { ...devices['iPhone 12'] },
+    //    },
 
     /* Test against branded browsers. */
     // {
@@ -169,7 +163,7 @@ export default defineConfig({
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     //},
- ],
+  ],
 
   /* Run your local dev server before starting the tests */
   // webServer: {
@@ -177,5 +171,4 @@ export default defineConfig({
   //   url: 'http://localhost:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
-});
-
+})

@@ -16,7 +16,7 @@ export class LoginPage extends BasePage{
   get signinButton() {
     return this.page.locator("button[type='submit']");
   }
-  async browse(){
+  async open(){
     await this.goto(this.url)
   }
   async validLogin(mobilenumber, password) {

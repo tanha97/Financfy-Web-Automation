@@ -15,7 +15,7 @@ export async function saveLoginState() {
 
   const loginPage = new LoginPage(page);
 
-  await loginPage.browse();
+  await loginPage.open();
   await loginPage.validLogin(
     process.env.STAGING_MOBILE_NUMBER,
     process.env.STAGING_PASSWORD
