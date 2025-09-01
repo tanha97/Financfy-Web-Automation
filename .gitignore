@@ -6,3 +6,17 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 
+# Environment files
+.env
+
+# Playwright storage state
+storageState.json
+
+# Playwright reports & test artifacts
+test-results/
+allure-results/
+allure-report/
+playwright-report/
+screenshots/
+videos/
+

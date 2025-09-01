@@ -1,6 +1,8 @@
-export class Login{
+import {BasePage} from './basePage.js'
+export class LoginPage extends BasePage{
     constructor(page){
-        this.page= page
+        super(page)
+        this.url= process.env.STAGING_URL
     }
 
     get mobileNumber(){
@@ -14,11 +16,14 @@ export class Login{
   get signinButton() {
     return this.page.locator("button[type='submit']");
   }
-
-  async validLogin(mobilenumber, password) {
-    await this.mobileNumber.fill(mobilenumber);
-    await this.password.fill(password);
-    await this.signinButton.click();
+  async browse(){
+    await this.goto(this.url)
   }
+  async validLogin(mobilenumber, password) {
+    await this.type(this.mobileNumber,mobilenumber);
+    await this.type(this.password,password);
+    await this.click(this.signinButton);
+  }
+  
 }
 

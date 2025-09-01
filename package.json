@@ -2,8 +2,7 @@
   "name": "financfy-web-automation",
   "version": "1.0.0",
   "main": "index.js",
-  "type":"module",
-  
+  "type": "module",
   "scripts": {},
   "keywords": [],
   "author": "",
@@ -12,6 +11,7 @@
   "devDependencies": {
     "@playwright/test": "^1.55.0",
     "@types/node": "^24.3.0",
+    "allure-playwright": "^3.3.3",
     "dotenv": "^17.2.1"
   }
 }
