@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "test:staging": "cross-env ENV=staging npx playwright test",
+  "test:prod": "cross-env ENV=production npx playwright test"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -12,6 +15,7 @@
     "@playwright/test": "^1.55.0",
     "@types/node": "^24.3.0",
     "allure-playwright": "^3.3.3",
+    "cross-env": "^7.0.3",
     "dotenv": "^17.2.1"
   }
 }

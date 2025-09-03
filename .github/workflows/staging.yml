@@ -1,0 +1,44 @@
+name: Playwright — Staging
+
+on:
+  # push:
+  #   branches: [ "staging" ]   # edit branch names as you use
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Playwright tests against Staging
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests (staging)
+        env:
+         ENV: staging
+         STAGING_URL: ${{ secrets.STAGING_URL }}
+         STAGING_MOBILE_NUMBER: ${{ secrets.STAGING_MOBILE_NUMBER }}
+         STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
+          # API_KEY: ${{ secrets.STAGING_API_KEY }}
+        run: npx playwright test --reporter=list --reporter=html
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-staging
+          path: playwright-report
+

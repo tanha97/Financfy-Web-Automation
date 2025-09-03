@@ -9,17 +9,30 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 export async function saveLoginState() {
+  const ENV = process.env.ENV || 'staging';
+
+  const configMap = {
+  staging: {
+    baseURL: process.env.STAGING_URL,
+    mobileNumber: process.env.STAGING_MOBILE_NUMBER,
+    password: process.env.STAGING_PASSWORD,
+  },
+  production: {
+    baseURL: process.env.PROD_URL,
+    mobileNumber: process.env.PROD_MOBILE_NUMBER,
+    password: process.env.PROD_PASSWORD,
+  },
+}
+const { baseURL, mobileNumber, password } = configMap[ENV];
   const browser = await chromium.launch({ headless: false });
-  const context = await browser.newContext();
+  const context = await browser.newContext({ baseURL });
   const page = await context.newPage();
+  
 
   const loginPage = new LoginPage(page);
-
-  await loginPage.open();
-  await loginPage.validLogin(
-    process.env.STAGING_MOBILE_NUMBER,
-    process.env.STAGING_PASSWORD
-  );
+// Navigate to correct URL for this environment
+  await loginPage.goto(`${baseURL}/`);
+  await loginPage.validLogin(mobileNumber, password );
 
   await page.waitForURL('**/dashboard');
 
@@ -27,5 +40,5 @@ export async function saveLoginState() {
   await context.storageState({ path: 'storageState.json' });
 
   await browser.close();
-  console.log('✅ Login state saved to storageState.json');
+  console.log(` Login state saved for ${ENV} environment to storageState.json`);
 }
