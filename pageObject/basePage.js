@@ -4,16 +4,18 @@ export class BasePage {
   }
 
   // Navigation
-  async goto(url) {
+  async goto(url='/') {
     await this.page.goto(url);
   }
 
   // Element actions
-  async click(locator) {
-    await locator.click();
-  }
 
-  async type(locator, text) {
+   async waitAndClick(locator) {
+    await locator.waitFor({ state: 'visible' });
+    await locator.click();
+   }
+  async waitAndFill(locator, text) {
+    await locator.waitFor({ state: 'visible' });
     await locator.fill(text);
   }
 
@@ -25,9 +27,7 @@ export class BasePage {
     return await locator.isVisible();
   }
 
-  async waitForVisible(locator) {
-    await locator.waitFor({ state: 'visible' });
-  }
+  
 
   // Utility
   async wait(ms) {

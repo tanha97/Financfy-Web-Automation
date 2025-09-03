@@ -1,0 +1,41 @@
+name: Playwright — Production
+
+on:
+#   push:
+#     branches: [ "main", "production" ]  # or whatever you use
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Playwright tests against Production
+    runs-on: ubuntu-latest
+    environment: production    # optional: ties to GitHub Environment for approvals
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests (production)
+        env:
+          BASE_URL: ${{ secrets.PROD_BASE_URL }}
+          API_KEY: ${{ secrets.PROD_API_KEY }}
+        run: npx playwright test --reporter=list --reporter=html
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-production
+          path: playwright-report
