@@ -24,7 +24,7 @@ export async function saveLoginState() {
   },
 }
 const { baseURL, mobileNumber, password } = configMap[ENV];
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ baseURL });
   const page = await context.newPage();
   
