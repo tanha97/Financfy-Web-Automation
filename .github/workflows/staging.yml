@@ -34,6 +34,10 @@ jobs:
          STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
           # API_KEY: ${{ secrets.STAGING_API_KEY }}
         run: npx playwright test --reporter=list --reporter=html --reporter=allure-playwright
+
+      - name: Check Allure Results
+        run: ls -la allure-results
+          
       - name: Generate Allure Report
         run: npx allure generate allure-results --clean -o allure-report
         continue-on-error: true
