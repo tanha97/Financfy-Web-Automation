@@ -40,7 +40,7 @@ export default defineConfig({
 
     baseURL: configMap[ENV].baseURL,
     trace: 'on-first-retry',
-    headless: false,
+    headless: process.env.CI ==='true',
     storageState: 'storageState.json',
     testMatch: ['**/*.spec.js'], //'**/utils/*.js'
     screenshot: 'on', // capture screenshot if test fails
