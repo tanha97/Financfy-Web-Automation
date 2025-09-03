@@ -5,6 +5,7 @@ export class BasePage {
 
   // Navigation
   async goto(url='/') {
+    const url = this.baseURL ? new URL(path, this.baseURL).toString() : path;
     await this.page.goto(url);
   }
 
