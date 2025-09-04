@@ -53,6 +53,7 @@ jobs:
           name: playwright-report-staging
           path: playwright-report
       
+     # Upload Allure Report
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v4
@@ -60,3 +61,25 @@ jobs:
           name: allure-report-staging
           path: allure-report
 
+
+    # ✅ Send email notification to Product Manager
+      - name: Send email notification
+        if: always()  
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "Playwright CI - ${{ job.status }}"
+          to: "tanha.tahity@vivasoftltd.com"
+          from: "Financfy QA <${{ secrets.SMTP_USERNAME }}>"
+          body: |
+            Hello Team,
+
+            The workflow has completed with status: ${{ job.status }}.
+
+            Repository: ${{ github.repository }}
+            Workflow: ${{ github.workflow }}
+            Run Number: ${{ github.run_number }}
+            Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
