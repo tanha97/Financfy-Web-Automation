@@ -72,7 +72,7 @@ jobs:
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "Playwright CI - ${{ job.status }}"
-          to: "tanha.tahity@vivasoftltd.com"
+          to: "tanha.tahity@vivasoftltd.com , amirul.islam@vivasoftltd.com"
           from: "Financfy QA <${{ secrets.SMTP_USERNAME }}>"
           body: |
             Hello Team,
