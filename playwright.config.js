@@ -30,7 +30,7 @@ export default defineConfig({
 
   reporter: [
     ['line'], // for console output
-    ['html'], // built-in HTML report
+    ['html', {outputFolder: 'playwright-report', open: 'never'}], // built-in HTML report
     ['allure-playwright'], // Allure report
   ],
 

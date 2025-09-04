@@ -33,7 +33,8 @@ jobs:
          STAGING_MOBILE_NUMBER: ${{ secrets.STAGING_MOBILE_NUMBER }}
          STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
           # API_KEY: ${{ secrets.STAGING_API_KEY }}
-        run: npx playwright test --reporter=list --reporter=html --reporter=allure-playwright
+
+        run: npx playwright test
 
       - name: Check Allure Results
         run: ls -la allure-results
