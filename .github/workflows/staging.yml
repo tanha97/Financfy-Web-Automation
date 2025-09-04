@@ -20,12 +20,35 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
+    # Cache Node.js dependencies (npm + node_modules)
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      
+
+    # Cache Playwright browsers
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-browsers
+          restore-keys: |
+            ${{ runner.os }}-playwright-browsers
+
       - name: Install dependencies
         run: npm ci
 
+    # Install Playwright browsers (will use cache if exists)    
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+    # Run Playwright tests (HTML + Allure reports enabled in config)      
       - name: Run Playwright tests (staging)
         env:
          ENV: staging
@@ -33,7 +56,6 @@ jobs:
          STAGING_MOBILE_NUMBER: ${{ secrets.STAGING_MOBILE_NUMBER }}
          STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
           # API_KEY: ${{ secrets.STAGING_API_KEY }}
-
         run: npx playwright test
 
       - name: Check Allure Results
