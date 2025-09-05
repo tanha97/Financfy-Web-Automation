@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    name: Run Playwright tests against Staging
+    name: Run tests against Staging
     runs-on: ubuntu-latest
 
     steps:
