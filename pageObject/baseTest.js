@@ -1,6 +1,7 @@
 import { test as base } from '@playwright/test'
 import { LoginPage } from '../pageObject/loginPage.js'
 import { CashTransfer } from './Transactions/cashTransfer.js'
+import { CashIn } from './Transactions/cashIn.js'
 
 // Extend base test
 export const test = base.extend({
@@ -12,6 +13,11 @@ export const test = base.extend({
   cashTransferPage: async ({ page }, use) => {
     const cashTransferPage = new CashTransfer(page)
     await use(cashTransferPage)
+  },
+
+  cashInPage: async ({ page }, use) => {
+    const cashInPage = new CashIn(page)
+    await use(cashInPage)
   },
 })
 

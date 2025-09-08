@@ -1,7 +1,13 @@
+import { expect } from "@playwright/test"
+
 export class BasePage {
   constructor(page, baseURL) {
     this.page = page;
     this.baseURL= baseURL
+    this.transactionMenu= page.locator('#Transactions')
+    this.amountField = page.locator("input[name='amount']")
+    this.saveButton = page.locator("button[type='submit']")
+    this.toastMessage = page.locator('div[role="alert"]')
   }
 
   // Navigation
@@ -10,14 +16,16 @@ export class BasePage {
     await this.page.goto(url);
   }
 
+  
+
   // Element actions
 
    async waitAndClick(locator) {
-    await locator.waitFor({ state: 'visible' });
+    await expect(locator).toBeVisible()
     await locator.click();
    }
   async waitAndFill(locator, text) {
-    await locator.waitFor({ state: 'visible' });
+    await expect(locator).toBeVisible()
     await locator.fill(text);
   }
 
@@ -28,6 +36,7 @@ export class BasePage {
   async isVisible(locator) {
     return await locator.isVisible();
   }
+
 
   
 
