@@ -2,7 +2,7 @@ import { test, expect } from '../../pageObject/baseTest.js'
 
 test('Cash In Create', async ({ cashInPage }) => {
   await cashInPage.cashInCreate(
-    '7000',
+    '7200',
     'vat',
     'Adiba',
     'Cash',
