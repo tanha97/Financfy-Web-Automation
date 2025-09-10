@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test:staging": "cross-env ENV=staging npx playwright test",
-  "test:prod": "cross-env ENV=production npx playwright test"
+    "test:prod": "cross-env ENV=production npx playwright test"
   },
   "keywords": [],
   "author": "",

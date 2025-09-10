@@ -9,7 +9,6 @@ export const test = base.extend({
     const loginPage = new LoginPage(page)
     await use(loginPage)
   },
-
   cashTransferPage: async ({ page }, use) => {
     const cashTransferPage = new CashTransfer(page)
     await use(cashTransferPage)

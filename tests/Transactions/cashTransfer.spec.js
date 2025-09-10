@@ -1,7 +1,8 @@
 import { test, expect } from '../../pageObject/baseTest.js'
 
-test.only('Cash Transfer create', async ({ cashTransferPage }) => {
+test('Cash Transfer create', async ({ cashTransferPage }) => {
   await cashTransferPage.createCashTransfer('1000', 'Transfer Done')
-  await expect(cashTransferPage.toastMessage).toBeVisible()
-  console.log(await cashTransferPage.getText(cashTransferPage.toastMessage))
+  const toastText = await cashTransferPage.getToastText(5000)
+  await expect(toastText).toContain('Successfully transferred cash.')
+  console.log('Message says:', toastText)
 })
