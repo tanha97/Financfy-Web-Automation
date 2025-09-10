@@ -1,6 +1,6 @@
 import { test, expect } from '../../pageObject/baseTest.js'
 
-test.only('Cash In Create', async ({ cashInPage }) => {
+test('Cash In Create', async ({ cashInPage }) => {
   await cashInPage.cashInCreate(
     '6000',
     'vat',
