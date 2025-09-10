@@ -6,6 +6,7 @@ export class CashTransfer extends BasePage {
     this.cashTransferTab= page.locator('#cash-transfer')
     this.addcashTransferButton = page.locator('#tour_add_advance_requisition')
     this.remarksField = page.locator('#remarks_text_area')
+    this.saveButton = page.locator("button[type='submit']")
     
   }
 
