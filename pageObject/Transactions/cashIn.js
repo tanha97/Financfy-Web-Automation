@@ -6,7 +6,7 @@ export class CashIn extends BasePage {
     this.cashInTab = page.locator('#tour_transactions_tab_Cashin')
   }
 
-  async cashInCreate(amount, tax, contact, receiveMode, category, reference) {
+  async cashInCreate(amount, tax, contact, paymentMode, category, reference) {
     await this.goto('/')
     await this.page.waitForLoadState('networkidle')
     await this.waitAndClick(this.transactionMenu)
@@ -15,7 +15,7 @@ export class CashIn extends BasePage {
     await this.selectTaxOptions(tax)
     await this.selectContactOptions(contact)
     await this.selectCategoryOptions(category)
-    await this.selectReceiveModeOptions(receiveMode)
+    await this.selectPaymentModeOptions(paymentMode)
     await this.waitAndFill(this.referenceField, reference)
     await this.waitAndClick(this.saveButton)
   }

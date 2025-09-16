@@ -3,7 +3,7 @@ import { chromium } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { LoginPage } from '../pageObject/loginPage.js';
+import { LoginPage } from '../../pageObject/loginPage.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '../.env') });

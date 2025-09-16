@@ -88,7 +88,7 @@ export class BasePage {
     )
   }
 
-  async selectReceiveModeOptions(optionPartialText) {
+  async selectPaymentModeOptions(optionPartialText) {
     await this.waitAndClick(this.paymentModeField)
     await this.optionsLocator.first().waitFor({ state: 'visible' })
     const optionsCount = await this.optionsLocator.count()

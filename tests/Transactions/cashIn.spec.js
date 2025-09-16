@@ -1,16 +1,15 @@
 import { test, expect } from '../../pageObject/baseTest.js'
 
-test('Cash In Create', async ({ cashInPage }) => {
+test('Cash In Create', async ({ cashInPage, data }) => {
   await cashInPage.cashInCreate(
-    '7200',
-    'vat',
-    'Adiba',
-    'Cash',
-    'House rent',
-    'Automation'
+    data.cashIn.amount,
+    data.cashIn.tax,
+    data.cashIn.contact,
+    data.cashIn.paymentMode,
+    data.cashIn.category,
+    data.cashIn.reference
   )
   const toastText = await cashInPage.getToastText(5000)
-  await expect(toastText).toContain("Cash in successful")
-  console.log("Message says:", toastText)
-
+  await expect(toastText).toContain('Cash in successful')
+  console.log('Message says:', toastText)
 })

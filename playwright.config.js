@@ -2,7 +2,7 @@
 import { defineConfig, devices } from '@playwright/test'
 import * as dotenv from 'dotenv'
 dotenv.config()
-const ENV = process.env.ENV?.toLowerCase()  || 'staging'
+export const ENV = process.env.ENV?.toLowerCase()  || 'staging'
 
 const configMap = {
   staging: {
@@ -46,6 +46,7 @@ export default defineConfig({
     screenshot: 'on', // capture screenshot if test fails
     video: 'on',
   },
+  
 
   /* Configure projects for major browsers */
 
@@ -93,4 +94,5 @@ export default defineConfig({
   //   url: 'http://localhost:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
+
 })
