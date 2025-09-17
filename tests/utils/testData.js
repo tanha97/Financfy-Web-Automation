@@ -29,13 +29,13 @@ export const testData = {
       category: 'Mission',
       reference: 'Automation_By_Tanha'
     },
-    // cashOut: {
-    //   amount: '4000',
-    //   tax: 'Gov Tax',
-    //   contact: 'Jane Smith',
-    //   receiveMode: 'Cash',
-    //   category: 'Supplier Payment',
-    //   reference: 'Automation'
-    // }
+    cashOut: {
+      amount: '4000',
+      tax: 'Dress Tax',
+      contact: 'Cng',
+      paymentMode: 'Cash',
+      category: 'Loan',
+      reference: 'Automation_at_Production'
+    }
   }
 }

@@ -4,6 +4,7 @@ import { CashTransfer } from './Transactions/cashTransfer.js'
 import { CashIn } from './Transactions/cashIn.js'
 import {ENV} from '../playwright.config.js'
 import { testData} from '../tests/utils/testData.js'
+import { CashOut } from './Transactions/cashOut.js'
 
 // Extend base test
 export const test = base.extend({
@@ -26,6 +27,11 @@ export const test = base.extend({
     const cashInPage = new CashIn(page)
     await use(cashInPage)
   },
+
+  cashOutPage: async ({page}, use) =>{
+    const cashOutPage =new CashOut(page)
+    await use(cashOutPage)
+  }
 })
 
 // Keep the same expect so we don’t need to re-import
