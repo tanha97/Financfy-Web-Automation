@@ -5,6 +5,7 @@ import { CashIn } from './Transactions/cashIn.js'
 import {ENV} from '../playwright.config.js'
 import { testData} from '../tests/utils/testData.js'
 import { CashOut } from './Transactions/cashOut.js'
+import { BulkEntries } from './Transactions/bulkEntries.js'
 
 // Extend base test
 export const test = base.extend({
@@ -31,6 +32,11 @@ export const test = base.extend({
   cashOutPage: async ({page}, use) =>{
     const cashOutPage =new CashOut(page)
     await use(cashOutPage)
+  },
+
+  bulkEntriesPage: async ({page}, use)=>{
+    const bulkEntriesPage = new BulkEntries(page)
+    await use(bulkEntriesPage)
   }
 })
 

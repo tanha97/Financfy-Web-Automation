@@ -4,6 +4,7 @@ import {TAX_OPTIONS} from "./enum.js"
 export const testData = {
   staging: {
     cashIn: {
+      type: "Cash in",
       amount: '7500',
       tax: TAX_OPTIONS.VAT,
       contact: 'Adiba',
