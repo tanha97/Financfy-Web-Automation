@@ -1,29 +1,30 @@
-// tests/utils/testData.js
+
+import {TAX_OPTIONS} from "./enum.js"
 
 export const testData = {
   staging: {
     cashIn: {
       amount: '7500',
-      tax: 'vat',
+      tax: TAX_OPTIONS.VAT,
       contact: 'Adiba',
       paymentMode: 'Cash',
       category: 'House rent',
       reference: 'Automation'
     },
-    // cashOut: {
-    //   amount: '5000',
-    //   tax: 'vat',
-    //   contact: 'Tanvir',
-    //   receiveMode: 'Bank',
-    //   category: 'Office Expense',
-    //   reference: 'QA Test'
-    // }
+    cashOut: {
+      amount: '5000',
+      tax: TAX_OPTIONS.VAT,
+      contact: 'Apon',
+      paymentMode: 'Bank',
+      category: 'Office rent',
+      reference: 'QA Test'
+    }
   },
 
   production: {
     cashIn: {
       amount: '8500',
-      tax: 'Dress Tax',
+      tax: TAX_OPTIONS.DRESS_TAX,
       contact: 'Doctor',
       paymentMode: 'Cheque',
       category: 'Mission',
@@ -31,7 +32,7 @@ export const testData = {
     },
     cashOut: {
       amount: '4000',
-      tax: 'Dress Tax',
+      tax: TAX_OPTIONS.DRESS_TAX,
       contact: 'Cng',
       paymentMode: 'Cash',
       category: 'Loan',
