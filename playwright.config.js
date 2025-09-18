@@ -2,7 +2,7 @@
 import { defineConfig, devices } from '@playwright/test'
 import * as dotenv from 'dotenv'
 dotenv.config()
-const ENV = process.env.ENV?.toLowerCase()  || 'staging'
+export const ENV = process.env.ENV?.toLowerCase()  || 'staging'
 
 const configMap = {
   staging: {
@@ -30,7 +30,7 @@ export default defineConfig({
 
   reporter: [
     ['line'], // for console output
-    ['html'], // built-in HTML report
+    ['html', {outputFolder: 'playwright-report', open: 'never'}], // built-in HTML report
     ['allure-playwright'], // Allure report
   ],
 
@@ -40,12 +40,13 @@ export default defineConfig({
 
     baseURL: configMap[ENV].baseURL,
     trace: 'on-first-retry',
-    headless: false,
+    headless: process.env.CI ==='true',
     storageState: 'storageState.json',
     testMatch: ['**/*.spec.js'], //'**/utils/*.js'
     screenshot: 'on', // capture screenshot if test fails
     video: 'on',
   },
+  
 
   /* Configure projects for major browsers */
 
@@ -93,4 +94,5 @@ export default defineConfig({
   //   url: 'http://localhost:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
+
 })

@@ -7,9 +7,8 @@ on:
 
 jobs:
   test:
-    name: Run Playwright tests against Production
+    name: Run tests against Production
     runs-on: ubuntu-latest
-    environment: production    # optional: ties to GitHub Environment for approvals
 
     steps:
       - name: Checkout
@@ -21,17 +20,54 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
+    # Cache Node.js dependencies (npm + node_modules)
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+    # Cache Playwright browsers
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-browsers
+          restore-keys: |
+            ${{ runner.os }}-playwright-browsers    
+
       - name: Install dependencies
         run: npm ci
 
+     # Install Playwright browsers (will use cache if exists)    
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests (production)
+      # Run Playwright tests (HTML + Allure reports enabled in config)      
+      - name: Run Playwright tests (staging)
         env:
-          BASE_URL: ${{ secrets.PROD_BASE_URL }}
-          API_KEY: ${{ secrets.PROD_API_KEY }}
-        run: npx playwright test --reporter=list --reporter=html
+         ENV: staging
+         STAGING_URL: ${{ secrets.PROD_URL }}
+         STAGING_MOBILE_NUMBER: ${{ secrets.PROD_MOBILE_NUMBER }}
+         STAGING_PASSWORD: ${{ secrets.PROD_PASSWORD }}
+          # API_KEY: ${{ secrets.PROD_API_KEY }}
+        run: npx playwright test
+
+
+      - name: Check Allure Results
+        run: ls -la allure-results
+
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline
+          
+      - name: Generate Allure Report
+        run: allure generate allure-results --clean -o allure-report
+        continue-on-error: true
+
 
       - name: Upload Playwright HTML report
         if: always()
@@ -39,3 +75,33 @@ jobs:
         with:
           name: playwright-report-production
           path: playwright-report
+
+  # Upload Allure Report
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-staging
+          path: allure-report
+
+   # ✅ Send email notification to Product Manager
+      - name: Send email notification
+        if: always()  
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "Playwright CI - ${{ job.status }}"
+          to: "tanha.tahity@vivasoftltd.com , amirul.islam@vivasoftltd.com"
+          from: "Financfy QA <${{ secrets.SMTP_USERNAME }}>"
+          body: |
+            Hello Team,
+
+            The workflow has completed with status: ${{ job.status }}.
+
+            Repository: ${{ github.repository }}
+            Workflow: ${{ github.workflow }}
+            Run Number: ${{ github.run_number }}
+            Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}

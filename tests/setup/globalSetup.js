@@ -1,5 +1,5 @@
 // tests/setup/globalSetup.js
-import { saveLoginState } from '../../utils/sessionHandling.js';
+import { saveLoginState } from '../utils/sessionHandling.js';
 
 export default async function globalSetup() {
   console.log('Creating login session...');
