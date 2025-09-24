@@ -77,7 +77,7 @@ async selectTypeOptions(optionPartialText) {
   }
     async bulkEntriesCreate(amount,type,contact,category,paymentMode,remarks){
         await this.goto('/')
-        await this.page.waitForLoadState('networkidle')
+        //await this.page.waitForLoadState('networkidle')
         await this.waitAndClick(this.transactionMenu)
         await this.waitAndClick(this.bulEntriesTab)
         await this.waitAndFill(this.amountcolumn, amount)
