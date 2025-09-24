@@ -61,7 +61,7 @@ export class BulkEntries extends BasePage {
    // Fill multiple rows
   async bulkEntriesCreate(rowsData) {
     await this.goto('/')
-    await this.page.waitForLoadState('networkidle')
+    //await this.page.waitForLoadState('networkidle')
     await this.waitAndClick(this.transactionMenu)
     await this.waitAndClick(this.bulkEntriesTab)
 
@@ -70,7 +70,7 @@ export class BulkEntries extends BasePage {
     }
     await this.waitAndClick(this.saveButton)
   }
-<<<<<<< HEAD
+
     async bulkEntriesCreate(amount,type,contact,category,paymentMode,remarks){
         await this.goto('/')
         //await this.page.waitForLoadState('networkidle')
@@ -83,9 +83,6 @@ export class BulkEntries extends BasePage {
         await this.selectPaymentModeOptions(paymentMode)
         await this.waitAndFill(remarks)
         await this.waitAndClick(this.saveButton)
-=======
 }
->>>>>>> eee03147c29cb0e091a8da9fd40464d0f852f184
-
-  
+}
 
