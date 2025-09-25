@@ -83,6 +83,27 @@ jobs:
           name: allure-report-staging
           path: allure-report
 
+  deploy-allure:
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Allure Report Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report-staging
+          path: ./allure-report
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+
+          
 
     # ✅ Send email notification to Product Manager
       - name: Send email notification
@@ -105,4 +126,5 @@ jobs:
             Workflow: ${{ github.workflow }}
             Run Number: ${{ github.run_number }}
             Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Allure Report: https://<your-username>.github.io/<your-repo-name>/
             
