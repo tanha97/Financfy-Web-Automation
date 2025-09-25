@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # Playwright test runner for staging environment
+  playwright-staging:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: financify-automation-staging
+    environment:
+      - ENV=staging
+      - NODE_ENV=production
+    volumes:
+      # Mount test results and reports to host
+      - ./test-results:/app/test-results
+      - ./playwright-report:/app/playwright-report
+      # Mount environment files
+      - ./.env:/app/.env:ro
+      - ./tests/.env:/app/tests/.env:ro
+    command: npm run test:staging
+    networks:
+      - automation-network
+
+  # Playwright test runner for production environment
+  playwright-production:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: financify-automation-production
+    environment:
+      - ENV=production
+      - NODE_ENV=production
+    volumes:
+      # Mount test results and reports to host
+      - ./test-results:/app/test-results
+      - ./playwright-report:/app/playwright-report
+      # Mount environment files
+      - ./.env:/app/.env:ro
+      - ./tests/.env:/app/tests/.env:ro
+    command: npm run test:prod
+    networks:
+      - automation-network
+    profiles:
+      - production
+
+  # Report server to view test results
+  report-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: financify-report-server
+    ports:
+      - "9323:9323"
+    volumes:
+      - ./playwright-report:/app/playwright-report:ro
+    command: npx playwright show-report --host=0.0.0.0 --port=9323
+    networks:
+      - automation-network
+    profiles:
+      - reports
+    depends_on:
+      - playwright-staging
+
+networks:
+  automation-network:
+    driver: bridge
+
+volumes:
+  test-results:
+  playwright-report:
