@@ -1,83 +1,79 @@
 import { BasePage } from '../basePage.js'
 
-export class BulkEntries extends BasePage{
-    constructor(page){
-        super(page)
-        this.bulEntriesTab = page.locator("//div[@id='bulk-entries']")
-        this.amountcolumn= page.locator("//table//tr[1]//td[2]//div[contains(@class,'simple-input-field')]//input[@type='text']")
-        this.typeColumn= page.locator("//div[@data-name='type_mfp9vd4g-4v2clphu']//div[contains(@class,'standard-select-dropdown__control')]")
-        this.contactCoulmn = page.locator("//div[@data-name='contact_mfpfof5e-k77qpaaa']//div[contains(@class,'standard-select-dropdown__control')]")
-        this.categoryColumn= page.locator("//div[@data-name='category_mfpfof5e-k77qpaaa']//div[contains(@class,'standard-select-dropdown__control')]")
-        this.paymentColumn= page.locator("//div[@data-name='mode_mfpfof5e-k77qpaaa']//div[contains(@class,'standard-select-dropdown__control')]")
-        this.remarksColumn= page.locator("//div[@data-name='remarks_mfpfof5e-k77qpaaa']//div[contains(@class,'standard-select-dropdown__control')]")
+export class BulkEntries extends BasePage {
+  constructor(page) {
+    super(page)
+    this.bulkEntriesTab = page.locator("//div[@id='bulk-entries']")
+    this.tableRows = page.locator('table tbody tr')
+
+    //Column mapping
+    this.columnMap = {
+      amount: 2,
+      type: 3,
+      contact: 4,
+      category: 5,
+      paymentMode: 6,
+      remarks: 7,
     }
-async selectTypeOptions(optionPartialText) {
-    await this.waitAndClick(this.typeColumn)
-    await this.optionsLocator.first().waitFor({ state: 'visible' })
-    const optionsCount = await this.optionsLocator.count()
-    for (let i = 0; i < optionsCount; i++) {
-      const text = await this.optionsLocator.nth(i).innerText()
-      if (text.toLowerCase().includes(optionPartialText.toLowerCase())) {
-        await this.optionsLocator.nth(i).click()
-        return
-      }
-    }
-    throw new Error(
-      `Type option containing "${optionPartialText}" not found`
+  }
+
+  //Locator for Input field inside a row
+
+  rowInput(rowIndex, columnKey) {
+    const columnIndex = this.columnMap[columnKey]
+    return this.page.locator(`//table//tr[${rowIndex}]//td[${columnIndex}]//input[@type="text"]`)
+  }
+
+  // Locator for dropdown inside a row
+  rowDropdown(rowIndex, columnKey) {
+    const columnIndex = this.columnMap[columnKey]
+    return this.page.locator(
+      `//table//tr[${rowIndex}]//td[${columnIndex}]//div[contains(@class,'standard-select-dropdown__control')]`
     )
   }
 
-  async selectContactOptions(optionPartialText) {
-    await this.waitAndClick(this.contactCoulmn)
-    await this.optionsLocator.first().waitFor({ state: 'visible' })
-    const optionsCount = await this.optionsLocator.count()
-    for (let i = 0; i < optionsCount; i++) {
-      const text = await this.optionsLocator.nth(i).innerText()
-      if (text.toLowerCase().includes(optionPartialText.toLowerCase())) {
-        await this.optionsLocator.nth(i).click()
-        return
-      }
-    }
-    throw new Error(
-      `Contact option containing "${optionPartialText}" not found`
-    )
+   // Dropdown option by visible text
+  typeOption(optionText) {
+    return this.page.locator(`//div[contains(@class,'standard-select-dropdown__option')][normalize-space(.)="${optionText}"]`)
   }
 
-   async selectPaymentModeOptions(optionPartialText) {
-    await this.waitAndClick(this.paymentColumn)
-    await this.optionsLocator.first().waitFor({ state: 'visible' })
-    const optionsCount = await this.optionsLocator.count()
-    for (let i = 0; i < optionsCount; i++) {
-      const text = await this.optionsLocator.nth(i).innerText()
-      if (text.toLowerCase().includes(optionPartialText.toLowerCase())) {
-        await this.optionsLocator.nth(i).click()
-        return
-      }
-    }
-    throw new Error(
-      `Payment mode option containing "${optionPartialText}" not found`
-    )
+   // Select dropdown
+  async selectTypeOptions(rowIndex, columnKey, optionText) {
+    const dropdown = this.rowDropdown(rowIndex, columnKey)
+    await this.waitAndClick(dropdown)
+    await this.typeOption(optionText).waitFor({ state: "visible" })
+    console.log(await this.page.locator("//div[contains(@class,'standard-select-dropdown__option')]").allTextContents())
+
+    await this.typeOption(optionText).click()
+  }
+
+  // Fill a single row
+  async fillRow(rowIndex, { amount, type, contact, category, paymentMode, remarks }) {
+    if (amount) await this.waitAndFill(this.rowInput(rowIndex,'amount'), amount)
+    if (type) await this.selectTypeOptions(rowIndex, 'type', type)
+    if (contact) await this.selectTypeOptions(rowIndex, 'contact', contact)
+    if (category) await this.selectTypeOptions(rowIndex, 'category', category)
+    if (paymentMode) await this.selectTypeOptions(rowIndex, 'paymentMode', paymentMode)
+    if (remarks) await this.waitAndFill(this.rowInput(rowIndex, 'remarks'), remarks)
   }
 
 
-  async selectCategoryOptions(optionPartialText) {
-    await this.waitAndClick(this.categoryColumn)
-    await this.optionsLocator.first().waitFor({ state: 'visible' })
-    const optionsCount = await this.optionsLocator.count()
-    for (let i = 0; i < optionsCount; i++) {
-      const text = await this.optionsLocator.nth(i).innerText()
-      if (text.toLowerCase().includes(optionPartialText.toLowerCase())) {
-        await this.optionsLocator.nth(i).click()
-        return
-      }
+   // Fill multiple rows
+  async bulkEntriesCreate(rowsData) {
+    await this.goto('/')
+    await this.page.waitForLoadState('networkidle')
+    await this.waitAndClick(this.transactionMenu)
+    await this.waitAndClick(this.bulkEntriesTab)
+
+    for (let i = 0; i < rowsData.length; i++) {
+      await this.fillRow(i + 1, rowsData[i])
     }
-    throw new Error(
-      `Category option containing "${optionPartialText}" not found`
-    )
+    await this.waitAndClick(this.saveButton)
   }
+<<<<<<< HEAD
     async bulkEntriesCreate(amount,type,contact,category,paymentMode,remarks){
         await this.goto('/')
-        await this.page.waitForLoadState('networkidle')
+        //await this.page.waitForLoadState('networkidle')
         await this.waitAndClick(this.transactionMenu)
         await this.waitAndClick(this.bulEntriesTab)
         await this.waitAndFill(this.amountcolumn, amount)
@@ -87,9 +83,9 @@ async selectTypeOptions(optionPartialText) {
         await this.selectPaymentModeOptions(paymentMode)
         await this.waitAndFill(remarks)
         await this.waitAndClick(this.saveButton)
-
-
-    }
-        
-    
+=======
 }
+>>>>>>> eee03147c29cb0e091a8da9fd40464d0f852f184
+
+  
+
