@@ -42,7 +42,7 @@ export class BulkEntries extends BasePage {
     const dropdown = this.rowDropdown(rowIndex, columnKey)
     await this.waitAndClick(dropdown)
     await this.typeOption(optionText).waitFor({ state: "visible" })
-    console.log(await this.page.locator("//div[contains(@class,'standard-select-dropdown__option')]").allTextContents())
+    // console.log(await this.page.locator("//div[contains(@class,'standard-select-dropdown__option')]").allTextContents())
 
     await this.typeOption(optionText).click()
   }
@@ -71,18 +71,6 @@ export class BulkEntries extends BasePage {
     await this.waitAndClick(this.saveButton)
   }
 
-    async bulkEntriesCreate(amount,type,contact,category,paymentMode,remarks){
-        await this.goto('/')
-        //await this.page.waitForLoadState('networkidle')
-        await this.waitAndClick(this.transactionMenu)
-        await this.waitAndClick(this.bulEntriesTab)
-        await this.waitAndFill(this.amountcolumn, amount)
-        await this.selectTypeOptions(type)
-        await this.selectContactOptions(contact)
-        await this.selectCategoryOptions(category)
-        await this.selectPaymentModeOptions(paymentMode)
-        await this.waitAndFill(remarks)
-        await this.waitAndClick(this.saveButton)
-}
+    
 }
 
