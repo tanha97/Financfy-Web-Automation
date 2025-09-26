@@ -4,7 +4,7 @@ export const testData = {
   staging: {
     cashIn: {
       type: 'Cash in',
-      amount: '7500',
+      amount: '7400',
       tax: TAX_OPTIONS.VAT,
       contact: 'Adiba',
       paymentMode: 'Cash',
@@ -12,7 +12,7 @@ export const testData = {
       reference: 'Automation',
     },
     cashOut: {
-      amount: '5000',
+      amount: '6000',
       tax: TAX_OPTIONS.VAT,
       contact: 'Apon',
       paymentMode: 'Bank',
