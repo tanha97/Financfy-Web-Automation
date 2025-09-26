@@ -7,11 +7,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies (including devDependencies for cross-env)
+RUN npm ci
 
 # Install Playwright browsers
 RUN npx playwright install --with-deps
+
+# Copy environment file
+COPY .env .env
 
 # Copy project files
 COPY . .
