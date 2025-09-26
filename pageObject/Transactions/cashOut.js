@@ -10,7 +10,7 @@ export class CashOut extends BasePage{
 
     async cashOutCreate(amount, tax, contact, paymentMode, category, reference) {
     await this.goto('/')
-    await this.page.waitForLoadState('networkidle')
+    //await this.page.waitForLoadState('networkidle')
     await this.waitAndClick(this.transactionMenu)
     await this.waitAndClick(this.cashOutTab)
     await this.waitAndFill(this.amountField, amount)

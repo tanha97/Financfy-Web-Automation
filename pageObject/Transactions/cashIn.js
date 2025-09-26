@@ -8,7 +8,7 @@ export class CashIn extends BasePage {
 
   async cashInCreate(amount, tax, contact, paymentMode, category, reference) {
     await this.goto('/')
-    await this.page.waitForLoadState('networkidle')
+    //await this.page.waitForLoadState('networkidle')
     await this.waitAndClick(this.transactionMenu)
     await this.waitAndClick(this.cashInTab)
     await this.waitAndFill(this.amountField, amount)
