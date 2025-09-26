@@ -84,6 +84,7 @@ jobs:
         with:
           name: allure-report-staging
           path: allure-report
+          if-no-files-found: warn
 
   deploy-allure:
     if: always()
@@ -98,6 +99,7 @@ jobs:
         with:
           name: allure-report-staging
           path: ./allure-report
+        continue-on-error: true
 
       - name: Check if Allure Report exists
         id: check_allure
@@ -107,7 +109,10 @@ jobs:
           else
             echo "no_report=false" >> $GITHUB_ENV
           fi
+
+
       - name: Deploy to GitHub Pages
+        if: env.no_report == 'false'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -136,5 +141,5 @@ jobs:
             Workflow: ${{ github.workflow }}
             Run Number: ${{ github.run_number }}
             Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            ${{ env.no_report == 'false' && '🔗 Allure Report: https://<your-username>.github.io/<your-repo-name>/' || '⚠️ No Allure report was generated (no tests executed or all failed before results).' }}
+            ${{ env.no_report == 'false' && '🔗 Allure Report: https://tanha97.github.io/Financfy-Web-Automation/' || '⚠️ No Allure report was generated (no tests executed or all failed before results).' }}
             
