@@ -18,6 +18,7 @@ allure-report/
 *.mp4
 
 # Environment files (will be mounted as volumes)
+# Note: .env is copied into the container, others are excluded
 .env.local
 .env.development
 .env.test
