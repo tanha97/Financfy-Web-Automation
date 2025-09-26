@@ -112,11 +112,18 @@ jobs:
 
 
       - name: Deploy to GitHub Pages
-        if: env.no_report == 'false'
+        if: env.no_report == 'true'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./allure-report
+      
+      - name: Set Allure Report URL
+        if: env.no_report == 'false'
+        run: |
+          REPO_NAME=${GITHUB_REPOSITORY#*/}
+          echo "ALLURE_REPORT_URL=https://${GITHUB_REPOSITORY_OWNER}.github.io/$REPO_NAME" >> $GITHUB_ENV
+
 
           
 
@@ -141,5 +148,5 @@ jobs:
             Workflow: ${{ github.workflow }}
             Run Number: ${{ github.run_number }}
             Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            ${{ env.no_report == 'false' && '🔗 Allure Report: https://tanha97.github.io/Financfy-Web-Automation/' || '⚠️ No Allure report was generated (no tests executed or all failed before results).' }}
+             ${{ env.no_report == 'false' && '🔗 Allure Report: ${{ env.ALLURE_REPORT_URL }}/' || '⚠️ No Allure report was generated (no tests executed or all failed before results).' }}
             
