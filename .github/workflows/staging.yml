@@ -1,8 +1,6 @@
 name: Playwright — Staging
 
 on:
-  # push:
-  #   branches: [ "staging" ]   # edit branch names as you use
   workflow_dispatch:
 
 jobs:
@@ -20,7 +18,6 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-    # Cache Node.js dependencies (npm + node_modules)
       - name: Cache Node.js dependencies
         uses: actions/cache@v3
         with:
@@ -30,9 +27,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      
 
-    # Cache Playwright browsers
       - name: Cache Playwright browsers
         uses: actions/cache@v3
         with:
@@ -44,18 +39,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-    # Install Playwright browsers (will use cache if exists)    
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-    # Run Playwright tests (HTML + Allure reports enabled in config)      
       - name: Run Playwright tests (staging)
         env:
-         ENV: staging
-         STAGING_URL: ${{ secrets.STAGING_URL }}
-         STAGING_MOBILE_NUMBER: ${{ secrets.STAGING_MOBILE_NUMBER }}
-         STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
-          # API_KEY: ${{ secrets.STAGING_API_KEY }}
+          ENV: staging
+          STAGING_URL: ${{ secrets.STAGING_URL }}
+          STAGING_MOBILE_NUMBER: ${{ secrets.STAGING_MOBILE_NUMBER }}
+          STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
         run: npx playwright test
 
       - name: Check Allure Results
@@ -63,7 +55,7 @@ jobs:
 
       - name: Install Allure CLI
         run: npm install -g allure-commandline
-          
+
       - name: Generate Allure Report
         if: always()
         run: |
@@ -76,8 +68,7 @@ jobs:
         with:
           name: playwright-report-staging
           path: playwright-report
-      
-     # Upload Allure Report
+
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v4
@@ -90,6 +81,7 @@ jobs:
     if: always()
     needs: test
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -110,43 +102,55 @@ jobs:
             echo "no_report=false" >> $GITHUB_ENV
           fi
 
-
       - name: Deploy to GitHub Pages
         if: env.no_report == 'false'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./allure-report
-      
+
       - name: Set Allure Report URL
         if: env.no_report == 'false'
         run: |
           REPO_NAME=${GITHUB_REPOSITORY#*/}
           echo "ALLURE_REPORT_URL=https://${GITHUB_REPOSITORY_OWNER}.github.io/$REPO_NAME" >> $GITHUB_ENV
 
+      - name: Set email body
+        run: |
+          if [ "${{ env.no_report }}" == "false" ]; then
+            cat <<EOF >> $GITHUB_ENV
+            EMAIL_BODY=Hello Team,
 
-          
+            The workflow has completed with status: ${{ needs.test.result }}.
 
-    # ✅ Send email notification to Product Manager
+            Repository: ${{ github.repository }}
+            Workflow: ${{ github.workflow }}
+            Run Number: ${{ github.run_number }}
+            Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            🔗 Allure Report: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+            EOF
+          else
+            cat <<EOF >> $GITHUB_ENV
+            EMAIL_BODY=Hello Team,
+
+            The workflow has completed with status: ${{ needs.test.result }}.
+
+            Repository: ${{ github.repository }}
+            Workflow: ${{ github.workflow }}
+            Run Number: ${{ github.run_number }}
+            Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            ⚠️ No Allure report was generated (no tests executed or all failed before results).
+            EOF
+          fi
       - name: Send email notification
-        if: always()  
+        if: always()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
           server_port: ${{ secrets.SMTP_PORT }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "Playwright CI - ${{ job.status }}"
+          subject: "Playwright CI - ${{ needs.test.result }}"
           to: "tanha.tahity@vivasoftltd.com , amirul.islam@vivasoftltd.com"
-          from: "Financfy QA <${{ secrets.SMTP_USERNAME }}>"
-          body: |
-            Hello Team,
-
-            The workflow has completed with status: ${{ job.status }}.
-
-            Repository: ${{ github.repository }}
-            Workflow: ${{ github.workflow }}
-            Run Number: ${{ github.run_number }}
-            Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-             ${{ env.no_report == 'false' && '🔗 Allure Report: ${{ env.ALLURE_REPORT_URL }}/' || '⚠️ No Allure report was generated (no tests executed or all failed before results).' }}
-            
+          from: ${{ env.FROM_ADDRESS }}
+          body: ${{ env.EMAIL_BODY }}
