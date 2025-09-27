@@ -115,33 +115,18 @@ jobs:
           REPO_NAME=${GITHUB_REPOSITORY#*/}
           echo "ALLURE_REPORT_URL=https://${GITHUB_REPOSITORY_OWNER}.github.io/$REPO_NAME" >> $GITHUB_ENV
 
+      - name: Set email FROM address
+        run: |
+          echo "FROM_ADDRESS=Financfy QA <${{ secrets.SMTP_USERNAME }}>" >> $GITHUB_ENV
+
       - name: Set email body
         run: |
           if [ "${{ env.no_report }}" == "false" ]; then
-            cat <<EOF >> $GITHUB_ENV
-            EMAIL_BODY=Hello Team,
-
-            The workflow has completed with status: ${{ needs.test.result }}.
-
-            Repository: ${{ github.repository }}
-            Workflow: ${{ github.workflow }}
-            Run Number: ${{ github.run_number }}
-            Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            🔗 Allure Report: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
-            EOF
+            echo -e "EMAIL_BODY=Hello Team,\n\nThe workflow has completed with status: ${{ needs.test.result }}.\n\nRepository: ${{ github.repository }}\nWorkflow: ${{ github.workflow }}\nRun Number: ${{ github.run_number }}\nRun URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n🔗 Allure Report: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_ENV
           else
-            cat <<EOF >> $GITHUB_ENV
-            EMAIL_BODY=Hello Team,
-
-            The workflow has completed with status: ${{ needs.test.result }}.
-
-            Repository: ${{ github.repository }}
-            Workflow: ${{ github.workflow }}
-            Run Number: ${{ github.run_number }}
-            Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            ⚠️ No Allure report was generated (no tests executed or all failed before results).
-            EOF
+            echo -e "EMAIL_BODY=Hello Team,\n\nThe workflow has completed with status: ${{ needs.test.result }}.\n\nRepository: ${{ github.repository }}\nWorkflow: ${{ github.workflow }}\nRun Number: ${{ github.run_number }}\nRun URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n⚠️ No Allure report was generated (no tests executed or all failed before results)." >> $GITHUB_ENV
           fi
+
       - name: Send email notification
         if: always()
         uses: dawidd6/action-send-mail@v3
@@ -151,6 +136,6 @@ jobs:
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "Playwright CI - ${{ needs.test.result }}"
-          to: "tanha.tahity@vivasoftltd.com , amirul.islam@vivasoftltd.com"
+          to: "tanha.tahity@vivasoftltd.com, amirul.islam@vivasoftltd.com"
           from: ${{ env.FROM_ADDRESS }}
           body: ${{ env.EMAIL_BODY }}
