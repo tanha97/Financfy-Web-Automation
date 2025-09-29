@@ -125,28 +125,70 @@ jobs:
           echo "ALLURE_REPORT_URL=https://${GITHUB_REPOSITORY_OWNER}.github.io/$REPO_NAME" >> $GITHUB_ENV
 
 
-          
+      - name: Set email FROM address
+        run: |
+          echo "FROM_ADDRESS=Financfy QA <${{ secrets.SMTP_USERNAME }}>" >> $GITHUB_ENV
 
-    # ✅ Send email notification to Product Manager
+      - name: Set email body
+        run: |
+          if [ "${{ env.no_report }}" == "false" ]; then
+            echo "EMAIL_BODY<<EOF" >> $GITHUB_ENV
+            echo "Hello Team,
+
+          The workflow has completed with status: ${{ job.status }}.
+
+          Repository: ${{ github.repository }}
+          Workflow: ${{ github.workflow }}
+          Run Number: ${{ github.run_number }}
+          Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          🔗 Allure Report: ${{ env.ALLURE_REPORT_URL }}/" >> $GITHUB_ENV
+                echo "EOF" >> $GITHUB_ENV
+              else
+                echo "EMAIL_BODY<<EOF" >> $GITHUB_ENV
+                echo "Hello Team,
+
+          The workflow has completed with status: ${{ job.status }}.
+
+          Repository: ${{ github.repository }}
+          Workflow: ${{ github.workflow }}
+          Run Number: ${{ github.run_number }}
+          Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            ⚠ No Allure report was generated (no tests executed or all failed before results)." >> $GITHUB_ENV
+                  echo "EOF" >> $GITHUB_ENV
+                fi
+
       - name: Send email notification
-        if: always()  
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
           server_port: ${{ secrets.SMTP_PORT }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "Playwright CI - ${{ job.status }}"
-          to: "tanha.tahity@vivasoftltd.com , amirul.islam@vivasoftltd.com"
-          from: "Financfy QA <${{ secrets.SMTP_USERNAME }}>"
-          body: |
-            Hello Team,
+          subject: 'Playwright CI - ${{ job.status }}'
+          to: 'tanha.tahity@vivasoftltd.com , amirul.islam@vivasoftltd.com'
+          from: 'Financfy QA <${{ secrets.SMTP_USERNAME }}>'
+          body: ${{ env.EMAIL_BODY }}  
 
-            The workflow has completed with status: ${{ job.status }}.
+    # # ✅ Send email notification to Product Manager
+    #   - name: Send email notification
+    #     if: always()  
+    #     uses: dawidd6/action-send-mail@v3
+    #     with:
+    #       server_address: ${{ secrets.SMTP_SERVER }}
+    #       server_port: ${{ secrets.SMTP_PORT }}
+    #       username: ${{ secrets.SMTP_USERNAME }}
+    #       password: ${{ secrets.SMTP_PASSWORD }}
+    #       subject: "Playwright CI - ${{ job.status }}"
+    #       to: "tanha.tahity@vivasoftltd.com , amirul.islam@vivasoftltd.com"
+    #       from: "Financfy QA <${{ secrets.SMTP_USERNAME }}>"
+    #       body: |
+    #         Hello Team,
 
-            Repository: ${{ github.repository }}
-            Workflow: ${{ github.workflow }}
-            Run Number: ${{ github.run_number }}
-            Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-             ${{ env.no_report == 'false' && '🔗 Allure Report: ${{ env.ALLURE_REPORT_URL }}/' || '⚠️ No Allure report was generated (no tests executed or all failed before results).' }}
+    #         The workflow has completed with status: ${{ job.status }}.
+
+    #         Repository: ${{ github.repository }}
+    #         Workflow: ${{ github.workflow }}
+    #         Run Number: ${{ github.run_number }}
+    #         Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    #          ${{ env.no_report == 'false' && '🔗 Allure Report: ${{ env.ALLURE_REPORT_URL }}/' || '⚠️ No Allure report was generated (no tests executed or all failed before results).' }}
             
