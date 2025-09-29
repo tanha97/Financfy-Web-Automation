@@ -1,2 +1,4 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","8592","Cash Transfer create","chromium","Sat Sep 27 19:32:32 UTC 2025","passed","Sat Sep 27 19:32:41 UTC 2025","","Transactions/cashTransfer.spec.js","",""
+"","8771","Cash Transfer create","chromium","Mon Sep 29 06:13:10 UTC 2025","passed","Mon Sep 29 06:13:19 UTC 2025","","Transactions/cashTransfer.spec.js","",""
+"","11235","Cash In Create","chromium","Mon Sep 29 06:12:49 UTC 2025","passed","Mon Sep 29 06:13:01 UTC 2025","","Transactions/cashIn.spec.js","",""
+"","9624","Cash Out Create","chromium","Mon Sep 29 06:13:01 UTC 2025","passed","Mon Sep 29 06:13:10 UTC 2025","","Transactions/cashOut.spec.js","",""
