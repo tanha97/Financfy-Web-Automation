@@ -1,7 +1,7 @@
 import { test, expect } from '../../pageObject/baseTest.js'
 
 
-test.only('Bulk Transactions Create', async ({ bulkEntriesPage, data, cashInPage }) => {
+test('Bulk Transactions Create', async ({ bulkEntriesPage, data, cashInPage }) => {
   await bulkEntriesPage.bulkEntriesCreate(data.bulkEntries)
 
   const toastText = await cashInPage.getToastText(5000)
