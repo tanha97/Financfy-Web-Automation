@@ -48,7 +48,7 @@ jobs:
         run: npx playwright install --with-deps
 
       # Run Playwright tests (HTML + Allure reports enabled in config)      
-      - name: Run Playwright tests (staging)
+      - name: Run Playwright tests (production)
         env:
          ENV: staging
          STAGING_URL: ${{ secrets.PROD_URL }}

@@ -13,7 +13,7 @@ export class BulkEntries extends BasePage {
       contact: 4,
       category: 5,
       paymentMode: 6,
-      remarks: 7,
+      remarks: 8,
     }
   }
 
@@ -23,7 +23,10 @@ export class BulkEntries extends BasePage {
     const columnIndex = this.columnMap[columnKey]
     return this.page.locator(`//table//tr[${rowIndex}]//td[${columnIndex}]//input[@type="text"]`)
   }
-
+rowTextInput(rowIndex, columnKey) {
+    const columnIndex = this.columnMap[columnKey]
+    return this.page.locator(`//table//tr[${rowIndex}]//td[${columnIndex}]//textarea`)
+  }
   // Locator for dropdown inside a row
   rowDropdown(rowIndex, columnKey) {
     const columnIndex = this.columnMap[columnKey]
@@ -54,7 +57,7 @@ export class BulkEntries extends BasePage {
     if (contact) await this.selectTypeOptions(rowIndex, 'contact', contact)
     if (category) await this.selectTypeOptions(rowIndex, 'category', category)
     if (paymentMode) await this.selectTypeOptions(rowIndex, 'paymentMode', paymentMode)
-    if (remarks) await this.waitAndFill(this.rowInput(rowIndex, 'remarks'), remarks)
+    if (remarks) await this.waitAndFill(this.rowTextInput(rowIndex, 'remarks'), remarks)
   }
 
 
@@ -64,7 +67,6 @@ export class BulkEntries extends BasePage {
     //await this.page.waitForLoadState('networkidle')
     await this.waitAndClick(this.transactionMenu)
     await this.waitAndClick(this.bulkEntriesTab)
-
     for (let i = 0; i < rowsData.length; i++) {
       await this.fillRow(i + 1, rowsData[i])
     }
