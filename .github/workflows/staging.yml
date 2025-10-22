@@ -18,7 +18,7 @@ jobs:
       - name: Build Docker image for Playwright tests
         run: |
           docker build -t playwright-staging .
-          
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -67,7 +67,7 @@ jobs:
           -e STAGING_PASSWORD=${{ secrets.STAGING_PASSWORD }} \
           -v ${{ github.workspace }}/allure-results:/app/allure-results \
           -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
-           playwright-staging
+          playwright-staging
 
       - name: Check Allure Results
         run: ls -la allure-results
