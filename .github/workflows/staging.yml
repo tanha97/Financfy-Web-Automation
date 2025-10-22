@@ -1,4 +1,4 @@
-name: Playwright — Staging
+name: Playwright - Staging
 
 on:
   workflow_dispatch:
@@ -49,13 +49,13 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests
-        env:
-          ENV: staging
-          STAGING_URL: ${{ secrets.STAGING_URL }}
-          STAGING_MOBILE_NUMBER: ${{ secrets.STAGING_MOBILE_NUMBER }}
-          STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
-        run: npx playwright test
+      # - name: Run Playwright tests
+      #   env:
+      #     ENV: staging
+      #     STAGING_URL: ${{ secrets.STAGING_URL }}
+      #     STAGING_MOBILE_NUMBER: ${{ secrets.STAGING_MOBILE_NUMBER }}
+      #     STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
+      #   run: npx playwright test
       
       - name: Run Playwright Tests inside Docker
         run: |
