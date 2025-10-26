@@ -1,34 +1,94 @@
-// playwright.config.js
-import { defineConfig, devices } from '@playwright/test';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { defineConfig, devices } from '@playwright/test'
+import * as dotenv from 'dotenv'
+dotenv.config()
+export const ENV = process.env.ENV?.toLowerCase() || 'staging'
 
-// ES module version of __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Load local .env only for local dev
-const envPath = path.resolve(__dirname, '.env');
-if (fs.existsSync(envPath)) {
-  console.log('Loading local .env file');
-  import('dotenv').then(dotenv => dotenv.config({ path: envPath }));
+const configMap = {
+  staging: {
+    baseURL: process.env.STAGING_URL,
+    mobileNumber: process.env.STAGING_MOBILE_NUMBER,
+    password: process.env.STAGING_PASSWORD,
+  },
+  production: {
+    baseURL: process.env.PROD_URL,
+    mobileNumber: process.env.PROD_MOBILE_NUMBER,
+    password: process.env.PROD_PASSWORD,
+  },
 }
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: './tests',
+
+  /* Run tests in files in parallel */
   fullyParallel: true,
+
+  /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
-  use: {
-    baseURL: process.env.STAGING_URL,
-    trace: 'on-first-retry',
-  },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+  retries: 0,
+  workers: 1,
+
+  reporter: [
+    ['line'], // for console output
+    ['html', { outputFolder: 'playwright-report', open: 'never' }], // built-in HTML report
+    ['allure-playwright'], // Allure report
   ],
-});
+
+  globalSetup: './tests/setup/globalSetup.js',
+
+  use: {
+    baseURL: configMap[ENV].baseURL,
+    trace: 'on-first-retry',
+    headless: process.env.CI === 'true',
+    storageState: 'storageState.json',
+    testMatch: ['**/*.spec.js'], //'**/utils/*.js'
+    screenshot: 'on', // capture screenshot if test fails
+    video: 'on',
+  },
+
+  /* Configure projects for major browsers */
+
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+
+    //   {
+    //     name: 'firefox',
+    //     use: { ...devices['Desktop Firefox'] },
+    //   },
+
+    //   {
+    //     name: 'webkit',
+    //     use: { ...devices['Desktop Safari'] },
+    //   },
+
+    //  /* Test against mobile viewports*/
+
+    //   {
+    //      name: 'Mobile Chrome',
+    //      use: { ...devices['Pixel 5'] },
+    //    },
+    //    {
+    //      name: 'Mobile Safari',
+    //      use: { ...devices['iPhone 12'] },
+    //    },
+
+    /* Test against branded browsers. */
+    // {
+    //   name: 'Microsoft Edge',
+    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
+    // },
+    // {
+    //   name: 'Google Chrome',
+    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+    //},
+  ],
+
+  /* Run your local dev server before starting the tests */
+  // webServer: {
+  //   command: 'npm run start',
+  //   url: 'http://localhost:3000',
+  //   reuseExistingServer: !process.env.CI,
+  // },
+})
