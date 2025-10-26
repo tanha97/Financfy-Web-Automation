@@ -38,7 +38,7 @@ export default defineConfig({
   use: {
     baseURL: configMap[ENV].baseURL,
     trace: 'on-first-retry',
-    headless: process.env.CI === 'true',
+    headless: 'true', // must change to `false` when run locally
     storageState: 'storageState.json',
     testMatch: ['**/*.spec.js'], //'**/utils/*.js'
     screenshot: 'on', // capture screenshot if test fails
