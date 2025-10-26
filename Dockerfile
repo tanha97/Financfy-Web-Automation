@@ -4,17 +4,14 @@ FROM mcr.microsoft.com/playwright:v1.55.0-jammy
 # Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copy package files first (cache npm install)
 COPY package*.json ./
 
-# Install dependencies (including devDependencies for cross-env)
+# Install dependencies
 RUN npm ci
 
 # Install Playwright browsers
 RUN npx playwright install --with-deps
-
-# Copy environment file
-COPY .env .env
 
 # Copy project files
 COPY . .
