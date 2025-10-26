@@ -1,0 +1,2 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","7792","Cash Transfer create","chromium","Sun Oct 26 18:59:51 UTC 2025","passed","Sun Oct 26 18:59:58 UTC 2025","","Transactions/cashTransfer.spec.js","",""
